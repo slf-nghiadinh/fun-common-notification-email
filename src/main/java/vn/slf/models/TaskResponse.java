@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmailRequest {
-    private String data;
+public class TaskResponse {
+    private String result;
 }

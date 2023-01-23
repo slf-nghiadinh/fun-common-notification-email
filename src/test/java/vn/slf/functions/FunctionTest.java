@@ -13,7 +13,7 @@ import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import vn.slf.handlers.FunctionApplication;
-import vn.slf.models.EmailRequest;
+import vn.slf.models.TaskRequest;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = FunctionApplication.class)
@@ -25,7 +25,7 @@ public class FunctionTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private JacksonTester<EmailRequest> json;
+    private JacksonTester<TaskRequest> json;
 
     @Before
     public void setup() {

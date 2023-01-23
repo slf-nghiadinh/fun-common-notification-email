@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TemplateResponse {
-    private String result;
+public class EmailRequest {
+    private String data;
 }

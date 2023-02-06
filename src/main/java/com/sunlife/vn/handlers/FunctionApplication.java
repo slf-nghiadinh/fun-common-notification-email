@@ -1,15 +1,15 @@
-package vn.slf.handlers;
+package com.sunlife.vn.handlers;
 
+import com.sunlife.vn.models.TaskRequest;
+import com.sunlife.vn.models.TaskResponse;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import vn.slf.functions.TaskFunction;
-import vn.slf.models.TaskRequest;
-import vn.slf.models.TaskResponse;
+import com.sunlife.vn.functions.TaskFunction;
 
 import java.util.function.Function;
 
-@SpringBootApplication(scanBasePackages = {"com.slf"})
+@SpringBootApplication(scanBasePackages = {"com.sunlife.vn"})
 public class FunctionApplication {
 
     public static void main(String[] args) {
@@ -18,6 +18,7 @@ public class FunctionApplication {
 
     @Bean
     public Function<TaskRequest, TaskResponse> handle() {
+        System.out.println("Start Function");
         return new TaskFunction();
     }
 }

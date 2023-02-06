@@ -1,4 +1,4 @@
-package vn.slf.functions;
+package com.sunlife.vn.functions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
@@ -12,8 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import vn.slf.handlers.FunctionApplication;
-import vn.slf.models.TaskRequest;
+import com.sunlife.vn.handlers.FunctionApplication;
+import com.sunlife.vn.models.TaskRequest;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = FunctionApplication.class)

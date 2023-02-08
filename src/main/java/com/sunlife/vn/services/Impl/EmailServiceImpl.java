@@ -23,7 +23,6 @@ import net.lingala.zip4j.model.enums.EncryptionMethod;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -65,17 +64,19 @@ public class EmailServiceImpl implements EmailService {
     private ObjectMapper mapper;
 
 
-   // @Value("${connection.mail.black-list}")
+    @Value("${connection.mail.black-list}")
     private String blackListConf;
-
-  //  @Value("${connection.mail.white-list}")
+    @Value("${connection.mail.white-list}")
     private String whiteListConf;
     @Override
     public String sendEmail(TaskRequest request) throws Exception {
-        ObjectNode data = (ObjectNode) JacksonUtil.objectToJsonNode(request.getUserdata());
-        String S3bucket = data.get("S3buCKet").asText();
+        amazonS3Engine = new AmazonS3Engine();
+        config = new HashMap<>();
+        ObjectNode data = (ObjectNode) JacksonUtil.objectToJsonNode(request.getMailSend());
+        ObjectNode EmailData = (ObjectNode)JacksonUtil.objectToJsonNode(request.getUserdata());
+        String S3bucket = data.get("S3bucKet").asText();
         String S3type = data.get("S3UrlType").asText();
-        String MailType = data.get("MailType").asText();
+        String MailType = data.get("mailType").asText();
         tempFileName = "temp" + request.getEventId();
         tempImg = "tempImg" + request.getEventId();
 
@@ -86,38 +87,44 @@ public class EmailServiceImpl implements EmailService {
         config.put("starttls","false");
         config.put("debug","true");
 
-        sendMessageUsingFreemarkerTemplate(data,request,MailType,S3bucket,S3type);
+        sendMessageUsingFreemarkerTemplate(EmailData,request,MailType,S3bucket,S3type);
         return null;
     }
 
-    public void sendMessageUsingFreemarkerTemplate(JsonNode emailData,TaskRequest taskRequest,String MailType,String S3Bucket, String S3Url) throws Exception {
+    public void sendMessageUsingFreemarkerTemplate(JsonNode EmailData,TaskRequest taskRequest,String MailType,String S3Bucket, String S3Url) throws Exception {
 
-       // String S3bucket = emailData.get("s3bucket").asText();
+        //String S3bucket = emailData.get("s3bucket").asText();
 
        // String S3Url = emailData.get("s3template").asText();
 
 
-        InputStream templateIS = amazonS3Engine.getObjectAsStream(S3Bucket,S3Url);
+
+        //InputStream templateIS = amazonS3Engine.getObjectAsStream(S3Bucket,S3Url);
+        InputStream templateIS = ClassLoader.getSystemResourceAsStream("Template_Email/Pos_Email.html");
+
+       // assert templateIS != null;
         String strReader = new BufferedReader(new InputStreamReader(templateIS))
                 .lines().collect(Collectors.joining("\n"));
         // get mail template
         Template freemarkerTemplate = new Template(MailType, new StringReader(strReader), new Configuration());
         // fill data to body
-        Map<String, Object> emailDataMap = JacksonUtil.jsonNodeToMap(emailData);
+        Map<String, Object> emailDataMap = JacksonUtil.jsonNodeToMap(EmailData);
         String htmlBody = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerTemplate, emailDataMap);
-        sendHtmlMessage(emailData, htmlBody,taskRequest);
+        sendHtmlMessage(EmailData, htmlBody,taskRequest);
     }
 
     private void sendHtmlMessage(JsonNode emailData, String htmlBody , TaskRequest taskRequest) throws Exception {
-        String jsonConfig = emailData.get("configMail").asText();
+        ObjectNode jsonConfig =  (ObjectNode)JacksonUtil.objectToJsonNode( taskRequest.getMailConfig());
 
-        String isPassword = emailData.get("isPassword").asText();
+        String isPassword = taskRequest.getSendPassword();
 
-        String mailTemplate = emailData.get("mailTemplate").asText();
+        String mailTemplate = taskRequest.getMailTemplate();
+
         // get data config
         JsonNode emailConfig = JacksonUtil.objectToJsonNode(jsonConfig);
+        JsonNode mailSend = JacksonUtil.objectToJsonNode(taskRequest.getMailSend());
         ObjectNode checkPassword =  (ObjectNode) JacksonUtil.objectToJsonNode(isPassword);
-        String sendPassword = emailData.get("isSendPassword").asText();
+        String sendPassword = mailSend.get("isSendPassword").asText();
         JsonNode imageConfig = JacksonUtil.objectToJsonNode(mailTemplate);
         List<String> blackList = Arrays.asList(blackListConf.split(","));
         List<String> whiteList = Arrays.asList(whiteListConf.split(","));

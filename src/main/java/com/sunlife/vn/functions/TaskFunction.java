@@ -30,7 +30,7 @@ public class TaskFunction implements Function<TaskRequest, TaskResponse> {
             if(isAttach.equals("F")){
                 data.remove("Attachment");
                 ObjectMapper mapper = new ObjectMapper();
-                request.setUserdata(mapper.writeValueAsString(data));
+                request.setMailSend(mapper.writeValueAsString(data));
         }
             String Result = emailService.sendEmail(request);
 

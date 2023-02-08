@@ -12,11 +12,13 @@ public class TaskRequest {
 
     private String EventId;
 
-    private MailConfig mailConfig;
+    private String  mailConfig;
 
-    private isSendPassword sendPassword;
+    private String  sendPassword;
 
-    private MailSend mailSend;
+    private String  mailSend;
+
+    private String mailTemplate;
     @Getter
     @Setter
     public static class MailConfig{
@@ -54,9 +56,6 @@ public class TaskRequest {
     @Setter
     @Getter
     public static class MailSend{
-        private List<String> whiteList;
-
-        private  List<String> blackList;
 
         private String mailType;
 
@@ -66,6 +65,13 @@ public class TaskRequest {
 
 
         private TemplateEmail templateEmail;
+
+        private String S3bucKet ;
+
+        private String S3UrlType;
+
+        private String configMail ;
+
 
 
 
